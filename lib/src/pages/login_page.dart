@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:health_safe_paciente/src/pages/pages.dart';
-import 'package:health_safe_paciente/src/providers/providers.dart';
-import 'package:health_safe_paciente/src/helpers/helpers.dart';
-import 'package:health_safe_paciente/src/services/services.dart';
+
 import 'package:health_safe_paciente/src/theme/themes.dart';
-import 'package:health_safe_paciente/src/widgets/widgets.dart';
 
 class LoginPage extends StatelessWidget {
   static const String routeName = 'LoginPage';
@@ -15,7 +10,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig(context); // TODO pasar a LoadingPage
 
-    return SafeArea(
+    return Container() /*SafeArea(
         child: Scaffold(
             backgroundColor: ColorsApp.azulLogin,
             body: Padding(
@@ -31,11 +26,12 @@ class LoginPage extends StatelessWidget {
                   ],
                 ),
               ),
-            )));
+            )))*/
+        ;
   }
 }
 
-class _FormLogin extends StatelessWidget {
+/*class _FormLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginProvider = Provider.of<LoginProvider>(context);
@@ -108,4 +104,4 @@ class _RegistroUsuarioBoton extends StatelessWidget {
           child: const Text('Registrate'))
     ]);
   }
-}
+}*/

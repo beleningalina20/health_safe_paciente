@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:health_safe_paciente/src/helpers/helpers.dart';
+import 'package:health_safe_paciente/src/theme/themes.dart';
+import 'package:health_safe_paciente/src/widgets/widgets.dart';
 
 class DropDownButtonCustom<T> extends StatefulWidget {
   T? value;
-
-  final String? label;
+  final String label;
   final Color labelColor;
-
   final List<T> items;
   final void Function(T?)? onChanged;
 
   DropDownButtonCustom(
       {super.key,
-      this.label,
+      required this.label,
       this.labelColor = Colors.black,
       required this.items,
       required this.value,
@@ -29,25 +28,19 @@ class _DropDownButtonCustomState<T> extends State<DropDownButtonCustom<T>> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.label != null)
-          Text(widget.label!,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText2!
-                  .copyWith(color: widget.labelColor)),
-        SizedBox(height: SizeConfig.height * 0.015),
+        DescriptionText(text: widget.label, color: widget.labelColor),
+        SizedBox(height: Dimens.padding10),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(
-              horizontal: SizeConfig.height * 0.03,
-              vertical: SizeConfig.height * 0.005),
+          padding: EdgeInsets.symmetric(horizontal: Dimens.padding30),
           decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(SizeConfig.height * 0.01)),
+              borderRadius:
+                  BorderRadius.circular(Dimens.roundedCornerRadius10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton<T>(
                   isExpanded: true,
-                  iconSize: SizeConfig.height * 0.05,
+                  iconSize: Dimens.iconSize50,
                   iconEnabledColor: Colors.blue,
                   iconDisabledColor: Colors.grey[400],
                   items: widget.items
