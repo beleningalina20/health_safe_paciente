@@ -255,7 +255,7 @@ class ContrasenaTextFormField extends StatelessWidget {
   final bool withMaxLenght;
   final Color? labelColor;
 
-  ContrasenaTextFormField(
+  const ContrasenaTextFormField(
       {super.key,
       required this.value,
       this.onChanged,

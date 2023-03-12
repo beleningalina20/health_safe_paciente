@@ -10,7 +10,6 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool newMessage = true;
     return AppBar(
       // actionsIconTheme: ,
       // automaticallyImplyLeading: ,
@@ -44,9 +43,7 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
       // toolbarTextStyle: ,
       actions: <Widget>[
         IconButton(
-            icon: Icon((newMessage)
-                ? Icons.mark_chat_unread_outlined
-                : Icons.mark_chat_unread_outlined),
+            icon: const Icon(Icons.mark_chat_unread_outlined),
             onPressed: () {
               // TODO Navegar al home del chatpage
             })

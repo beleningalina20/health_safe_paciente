@@ -38,11 +38,11 @@ class CircleAvatarImagenPerfil extends StatelessWidget {
 }
 
 class ImagenPerfil extends StatelessWidget {
-  File? imagenPerfil;
+  final File? imagenPerfil;
   final Color? labelColor;
   final void Function(File) onChanged;
 
-  ImagenPerfil(
+  const ImagenPerfil(
       {super.key,
       required this.onChanged,
       required this.imagenPerfil,
@@ -83,13 +83,13 @@ class ImagenPerfil extends StatelessWidget {
 }
 
 class ImagenDni extends StatelessWidget {
-  File? imagenDni;
-  AssetImage imagenPlaceholder;
+  final File? imagenDni;
+  final AssetImage imagenPlaceholder;
   final void Function(File) onChanged;
   final String label;
   final Color? labelColor;
 
-  ImagenDni(
+  const ImagenDni(
       {super.key,
       required this.imagenDni,
       required this.imagenPlaceholder,
@@ -162,7 +162,6 @@ void seleccionImagen(BuildContext context, void Function(File) onChanged) {
 
 Future<void> _pickImage(BuildContext context, ImageSource source,
     void Function(File) onChanged) async {
-  // Navigator.pop(context);
   ImagePicker imagePicker = ImagePicker();
   var image = await imagePicker.pickImage(source: source);
   if (image != null) {

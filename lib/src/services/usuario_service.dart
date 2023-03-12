@@ -1,10 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:health_safe_paciente/src/services/mocks/registro_usuario_response_mock.dart';
 import 'package:health_safe_paciente/src/services/utils/api_exceptions.dart';
-import 'package:health_safe_paciente/src/services/utils/api_response_mapper.dart';
-import 'package:health_safe_paciente/src/services/utils/environments.dart';
 import 'package:health_safe_paciente/src/models/responses/registro_usuario_response.dart';
 import 'package:health_safe_paciente/src/services/utils/api_response.dart';
 
@@ -30,8 +27,8 @@ class UsuarioService extends ChangeNotifier {
 
   Future<RegistroUsuarioResponse> registroService(Map<String, String> data,
       File imagenPerfil, File imagenDniFrente, File imagenDniDorso) async {
-    late Map<String, dynamic> response;
-    Uri url = Uri.parse('${Environments.apiUrl}/usuarios/');
+    // late Map<String, dynamic> response;
+    // Uri url = Uri.parse('${Environments.apiUrl}/usuarios/');
 
     try {
       /*http.MultipartRequest request = http.MultipartRequest("post", url)

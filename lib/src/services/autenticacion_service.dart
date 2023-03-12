@@ -1,12 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:health_safe_paciente/src/services/mocks/login_response_mock.dart';
 import 'package:health_safe_paciente/src/models/models.dart';
 import 'package:health_safe_paciente/src/services/utils/api_exceptions.dart';
 import 'package:health_safe_paciente/src/services/utils/api_response.dart';
-import 'package:health_safe_paciente/src/services/utils/api_response_mapper.dart';
-import 'package:health_safe_paciente/src/services/utils/environments.dart';
 import 'package:health_safe_paciente/src/services/utils/local_storage_manager.dart';
 
 class AutenticacionService extends ChangeNotifier {
@@ -43,8 +40,8 @@ class AutenticacionService extends ChangeNotifier {
   }
 
   Future<LoginResponse> loginService(String correo, String contrasena) async {
-    late Map<String, dynamic> response;
-    Uri url = Uri.parse('${Environments.apiUrl}/autenticacion/login');
+    // late Map<String, dynamic> response;
+    // Uri url = Uri.parse('${Environments.apiUrl}/autenticacion/login');
 
     try {
       /*final resp = await http.post(url, body: {
