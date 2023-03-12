@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:health_safe_paciente/src/pages/pages.dart';
 import 'package:provider/provider.dart';
 import 'package:health_safe_paciente/src/pages/login_page.dart';
 import 'package:health_safe_paciente/src/providers/providers.dart';
@@ -180,7 +181,9 @@ class _RegistroUsuarioForm extends StatelessWidget {
         .then((value) {
       switch (usuarioService.registroStatus?.status) {
         case Status.COMPLETED:
-          // TODO Navegar a registro de paciente
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              RegistroPacientePage.routeName,
+              ModalRoute.withName(LoginPage.routeName));
           break;
         case Status.ERROR:
           showDialogCustom(
