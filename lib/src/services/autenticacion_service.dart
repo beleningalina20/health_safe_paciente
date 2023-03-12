@@ -1,15 +1,16 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:health_safe_paciente/src/services/utils/environments.dart';
+import 'package:health_safe_paciente/src/services/mocks/login_response_mock.dart';
 import 'package:health_safe_paciente/src/models/models.dart';
+import 'package:health_safe_paciente/src/services/utils/api_exceptions.dart';
+import 'package:health_safe_paciente/src/services/utils/api_response.dart';
+import 'package:health_safe_paciente/src/services/utils/api_response_mapper.dart';
+import 'package:health_safe_paciente/src/services/utils/environments.dart';
+import 'package:health_safe_paciente/src/services/utils/local_storage_manager.dart';
 
-class AutenticacionService with ChangeNotifier {
+class AutenticacionService extends ChangeNotifier {
   late Usuario _usuario;
-
-  bool _isLoading = false;
-
-  final _storage = const FlutterSecureStorage();
 
   Usuario get usuario => _usuario;
   set usuario(Usuario value) {
@@ -17,111 +18,50 @@ class AutenticacionService with ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isLoading => _isLoading;
-  set isLoading(bool value) {
-    _isLoading = value;
+  ApiResponse<LoginResponse>? _loginStatus;
+  ApiResponse<LoginResponse>? get loginStatus => _loginStatus;
+  set loginStatus(ApiResponse<LoginResponse>? value) {
+    _loginStatus = value;
     notifyListeners();
   }
 
-  static Future<String?> getToken() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: 'token');
-    return token;
-  }
-
-  static Future<void> deleteToken() async {
-    const storage = FlutterSecureStorage();
-    await storage.delete(key: 'token');
-  }
-
-  Future registroUsuario() async {
-    isLoading = true;
-    // Uri url = Uri.parse("${Environment.apiUrl}/usuarios");
-
-    try {
-      /*var request = http.MultipartRequest("post", url)
-        ..headers.addAll({'Content-Type': 'application/json'})
-        ..fields.addAll({})
-        ..files.addAll([
-          http.MultipartFile.fromString('imagenPerfil', ''),
-          http.MultipartFile.fromString('imagenDniFrente', ''),
-          http.MultipartFile.fromString('imagenDniDorso', ''),
-        ]);
-
-      var response = await request.send();
-      var resp = await http.Response.fromStream(response);
-
-      if (resp.statusCode != 201) return false;*/
-      isLoading = false;
-      /*
-
-      final autenticacionUsuarioResponse =
-          autenticacionResponseFromJson(resp.body);*/
-      usuario = Usuario(
-        idusuario: 6,
-        correo: "maria-perez@gmail.com",
-        contrasena: "MariaPerez3",
-        dni: 25789654,
-        nombre: "Maria",
-        apellido: "Perez",
-        fechaNacimiento: DateTime(1984, 10, 25),
-        sexo: "FEMENINO",
-        imagenPerfil:
-            'https://aishlatino.com/wp-content/uploads/2021/11/que-tipo-de-persona-te-gustaria-ser-730x411-SP.jpg',
-        imagenDniFrente: "",
-        imagenDniDorso: "",
-        rol: Rol(idrol: 1, descripcion: "PACIENTE"),
-      );
-      await _guardarToken('token');
-
-      isLoading = false;
-    } catch (e) {
-      isLoading = false;
-      throw Exception(e.toString());
-    }
-  }
-
   Future login(String correo, String contrasena) async {
-    isLoading = true;
+    loginStatus = ApiResponse.loading();
 
-    // var url = Uri.parse('${Environment.apiUrl}/api/auth/login');
-
-    try {
-      /*final resp = await http.post(url,
-          headers: {'Content-Type': 'application/json'},
-          body: {'correo': correo, 'contrasena': contrasena});
-
-      if (resp.statusCode != 201) return false;*/
-      isLoading = false;
-
-      /*final loginUsuarioResponse = autenticacionResponseFromJson(resp.body);
-      usuario = loginUsuarioResponse.usuario;*/
-
-      usuario = Usuario(
-        idusuario: 6,
-        correo: "maria-perez@gmail.com",
-        contrasena: "MariaPerez3",
-        dni: 25789654,
-        nombre: "Maria",
-        apellido: "Perez",
-        fechaNacimiento: DateTime(1984, 10, 25),
-        sexo: "FEMENINO",
-        imagenPerfil:
-            'https://aishlatino.com/wp-content/uploads/2021/11/que-tipo-de-persona-te-gustaria-ser-730x411-SP.jpg',
-        imagenDniFrente: "",
-        imagenDniDorso: "",
-        rol: Rol(idrol: 1, descripcion: "PACIENTE"),
-      );
-
-      await _guardarToken('token');
-    } catch (e) {
-      isLoading = false;
-      throw Exception(e.toString());
-    }
+    await loginService(correo, contrasena).then((value) {
+      loginStatus = ApiResponse.completed(value);
+      usuario = loginStatus!.data!.usuario;
+      LocalStorage.localStorage.setToken(loginStatus!.data!.token);
+    }).onError((error, stackTrace) {
+      loginStatus = ApiResponse.error(error.toString());
+    });
   }
 
-  Future _guardarToken(String token) async =>
-      await _storage.write(key: 'token', value: token);
+  void logout() async {
+    await LocalStorage.localStorage.deleteToken();
+    loginStatus = null;
+  }
 
-  Future logout() async => await _storage.delete(key: 'token');
+  Future<LoginResponse> loginService(String correo, String contrasena) async {
+    late Map<String, dynamic> response;
+    Uri url = Uri.parse('${Environments.apiUrl}/autenticacion/login');
+
+    try {
+      /*final resp = await http.post(url, body: {
+        'correo': correo,
+        'contrasena': contrasena
+      }).timeout(const Duration(seconds: 3));
+
+      debugPrint(resp.body.toString());
+
+      response = apiResponseMapper(resp);
+
+      return LoginResponse.fromJson(response);*/
+      return loginResponseMock;
+    } on SocketException {
+      throw FetchDataException(msg: 'No Internet Connection');
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

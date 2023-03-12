@@ -1,18 +1,25 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
-/*class LoginFormProvider with ChangeNotifier {
+class LoginFormProvider extends ChangeNotifier {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  String correo = '';
-  String contrasena = '';
+  String _correo = '';
+  String _contrasena = '';
 
-  bool _isLoading = false;
-
-  bool get isLoading => _isLoading;
-  set isLoading(bool value) {
-    _isLoading = value;
+  String get correo => _correo;
+  set correo(String value) {
+    _correo = value;
     notifyListeners();
   }
 
-  bool isValidForm() => formKey.currentState?.validate() ?? false;
-}*/
+  String get contrasena => _contrasena;
+  set contrasena(String value) {
+    _contrasena = value;
+    notifyListeners();
+  }
+
+  bool isValidForm() {
+    if (formKey.currentState == null) return false;
+    return formKey.currentState!.validate() && correo != '' && contrasena != '';
+  }
+}

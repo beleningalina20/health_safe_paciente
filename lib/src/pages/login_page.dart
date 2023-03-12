@@ -1,106 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:health_safe_paciente/src/pages/pages.dart';
+import 'package:health_safe_paciente/src/services/services.dart';
+import 'package:health_safe_paciente/src/services/utils/services_status.dart';
+import 'package:health_safe_paciente/src/providers/providers.dart';
 import 'package:health_safe_paciente/src/theme/size_config.dart';
+import 'package:health_safe_paciente/src/theme/themes.dart';
+import 'package:health_safe_paciente/src/widgets/widgets.dart';
 
 class LoginPage extends StatelessWidget {
-  static const String routeName = 'LoginPage';
+  static const String routeName = "LoginPage";
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig(context); // TODO pasar a LoadingPage
-
-    return Container(); /*SafeArea(
-        child: Scaffold(
-            backgroundColor: ColorsApp.azulLogin,
-            body: Padding(
-              padding: EdgeInsets.all(SizeConfig.height * 0.02),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
+    SizeConfig(context);
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: ColorsApp.azulLogin,
+        body: Padding(
+          padding: EdgeInsets.all(Dimens.padding20),
+          child: LayoutBuilder(
+            builder: (context, constraint) => SingleChildScrollView(
+              // https://github.com/flutter/flutter/issues/18711
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    minWidth: constraint.maxWidth,
+                    minHeight: constraint.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(children: <Widget>[
                     const LogoHealthSafe(),
-                    ChangeNotifierProvider(
-                        create: (_) => LoginProvider(), child: _FormLogin()),
-                    _RegistroUsuarioBoton()
-                  ],
+                    Expanded(
+                      child: ChangeNotifierProvider(
+                          create: (_) => LoginFormProvider(),
+                          child: const _LoginForm()),
+                    ),
+                  ]),
                 ),
               ),
-            )));*/
-  }
-}
-
-/*class _FormLogin extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final loginProvider = Provider.of<LoginProvider>(context);
-    final autenticacionService = Provider.of<AutenticacionService>(context);
-
-    return Container(
-      margin: EdgeInsets.symmetric(
-          vertical: SizeConfig.height * 0.015,
-          horizontal: SizeConfig.height * 0.015),
-      child: Form(
-        key: loginProvider.formKey,
-        child: Column(
-          children: [
-            TextFormFieldCustom(
-              label: 'Correo',
-              labelColor: Colors.white,
-              keyboardType: TextInputType.emailAddress,
-              value: loginProvider.correo,
-              onChanged: (value) => loginProvider.correo = value,
             ),
-            SizedBox(height: SizeConfig.height * 0.03),
-            TextFormFieldCustom(
-                label: 'Contraseña',
-                labelColor: Colors.white,
-                isPassword: true,
-                value: loginProvider.contrasena,
-                onChanged: (value) => loginProvider.contrasena = value),
-            SizedBox(height: SizeConfig.height * 0.03),
-            (!autenticacionService.isLoading)
-                ? ElevatedButtonCustom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.blue,
-                    onPressed: (!loginProvider.isLoading)
-                        ? () => loginUsuario(context)
-                        : () {},
-                    text: 'Iniciar Sesión')
-                : const CircularProgressIndicatorCustom()
-          ],
+          ),
         ),
+        bottomNavigationBar: const _RegistroUsuarioPage(),
       ),
     );
   }
+}
 
-  void loginUsuario(BuildContext context) async {
-    final loginProvider = Provider.of<LoginProvider>(context, listen: false);
-    FocusScope.of(context).unfocus();
-    if (!loginProvider.isValidForm()) return;
+class _LoginForm extends StatelessWidget {
+  const _LoginForm();
 
-    final autenticacionSevice =
-        Provider.of<AutenticacionService>(context, listen: false);
+  @override
+  Widget build(BuildContext context) {
+    final loginFormProvider = Provider.of<LoginFormProvider>(context);
+    final autenticacionService = Provider.of<AutenticacionService>(context);
 
-    await autenticacionSevice
-        .login(loginProvider.correo, loginProvider.contrasena)
-        .then((resp) =>
-            Navigator.of(context).pushReplacementNamed(HomePage.routeName))
-        .onError((error, stackTrace) {
-      // TODO
+    return Form(
+        key: loginFormProvider.formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            EmailTextFormField(
+              value: loginFormProvider.correo,
+              onChanged: (String value) => loginFormProvider.correo = value,
+            ),
+            SizedBox(height: Dimens.padding30),
+            ContrasenaTextFormField(
+              value: loginFormProvider.contrasena,
+              onChanged: (String value) => loginFormProvider.contrasena = value,
+            ),
+            (autenticacionService.loginStatus?.status == Status.LOADING)
+                ? Padding(
+                    padding: EdgeInsets.all(Dimens.padding40),
+                    child: const Center(child: CircularProgressIndicator()),
+                  )
+                : ElevatedButtonCustom(
+                    margin: EdgeInsets.only(top: Dimens.padding40),
+                    text: 'Iniciar sesión',
+                    onPressed: (loginFormProvider.isValidForm())
+                        ? () async => await login(
+                              context,
+                              autenticacionService,
+                              loginFormProvider.correo,
+                              loginFormProvider.contrasena,
+                            )
+                        : null,
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.blue,
+                  )
+          ],
+        ));
+  }
+
+  Future<void> login(BuildContext context, AutenticacionService service,
+      String correo, String contrasena) async {
+    await service.login(correo, contrasena).then((value) {
+      switch (service.loginStatus?.status) {
+        case Status.COMPLETED:
+          Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+          break;
+
+        case Status.ERROR:
+          showDialogCustom(context, [
+            const DescriptionText(
+                text: "El correo y/o contraseña son incorrectos.",
+                textAlign: TextAlign.center),
+          ]);
+          break;
+        default:
+      }
     });
   }
 }
 
-class _RegistroUsuarioBoton extends StatelessWidget {
+class _RegistroUsuarioPage extends StatelessWidget {
+  const _RegistroUsuarioPage();
+
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const DisclaimerText(text: '¿No tienes cuenta aún?', color: Colors.white),
-      TextButton(
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+      const DescriptionText(
+          text: "¿No tienes cuenta aún?", color: Colors.white),
+      TextButtonCustom(
+          child: const Text("Registraté"),
           onPressed: () =>
-              Navigator.pushNamed(context, RegistroUsuarioPage.routeName),
-          child: const Text('Registrate'))
+              Navigator.of(context).pushNamed(RegistroUsuarioPage.routeName))
     ]);
   }
 }
-*/
