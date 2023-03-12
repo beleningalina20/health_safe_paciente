@@ -145,9 +145,12 @@ class RegistroUsuarioFormProvider extends ChangeNotifier {
     return regExp.hasMatch(value) ? null : 'Ingrese un DNI válido';
   }
 
-  /*String? fechaNacimientoValidator(DateTime? value) {
-    if (value == null) return null;
-    // if (dateTime.age < 18) return 'Debe tener más de 18 años para registrarse'
-    return null;
-  }*/
+  bool esMayorEdad() {
+    if (fechaNacimiento != null) {
+      Duration difference = DateTime.now().difference(fechaNacimiento!);
+      double edad = difference.inDays / 365;
+      return edad >= 18.0;
+    }
+    return false;
+  }
 }

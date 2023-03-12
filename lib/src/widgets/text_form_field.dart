@@ -141,7 +141,6 @@ class _TextFormFieldCustom extends StatelessWidget {
 class DateTimeTextFormField extends StatelessWidget {
   final String hintText;
   final void Function(DateTime) onChanged;
-  final String? Function(DateTime?)? validator;
   final TextEditingController? controller;
   final Color? labelColor;
 
@@ -150,7 +149,6 @@ class DateTimeTextFormField extends StatelessWidget {
       required this.hintText,
       required this.onChanged,
       this.controller,
-      this.validator,
       this.labelColor});
 
   @override
@@ -159,7 +157,6 @@ class DateTimeTextFormField extends StatelessWidget {
         labelColor: labelColor,
         controller: controller,
         hintText: hintText,
-        keyboardType: TextInputType.datetime,
         onChanged: (String value) {
           onChanged(DateTime.parse(value));
           controller?.text = value;

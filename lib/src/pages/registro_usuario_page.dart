@@ -120,12 +120,34 @@ class _RegistroUsuarioForm extends StatelessWidget {
                       ? () async {
                           FocusScope.of(context).unfocus();
 
-                          await registro(
-                              context,
-                              registroUsuarioFormProvider.data(),
-                              registroUsuarioFormProvider.imagenPerfil!,
-                              registroUsuarioFormProvider.imagenDniFrente!,
-                              registroUsuarioFormProvider.imagenDniDorso!);
+                          if (registroUsuarioFormProvider.esMayorEdad()) {
+                            await registro(
+                                context,
+                                registroUsuarioFormProvider.data(),
+                                registroUsuarioFormProvider.imagenPerfil!,
+                                registroUsuarioFormProvider.imagenDniFrente!,
+                                registroUsuarioFormProvider.imagenDniDorso!);
+                          } else {
+                            showDialogCustom(
+                                context,
+                                [
+                                  const DescriptionText(
+                                    text:
+                                        "Para registrarse debe ser mayor de edad",
+                                    textAlign: TextAlign.center,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  Icon(Icons.warning,
+                                      color: Colors.orange,
+                                      size: SizeConfig.height * 0.1),
+                                ],
+                                onAccept: () => Navigator.of(context)
+                                    .pushNamedAndRemoveUntil(
+                                        LoginPage.routeName, (route) => false),
+                                barrierDismissible: false,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center);
+                          }
                         }
                       : () {
                           FocusScope.of(context).unfocus();
@@ -263,7 +285,6 @@ class _DatosPersonales extends StatelessWidget {
             registroUsuarioFormProvider.fechaNacimiento = value;
           },
           hintText: 'Fecha de nacimiento',
-          // validator: registroUsuarioFormProvider.fechaNacimientoValidator
         )
       ],
     );
