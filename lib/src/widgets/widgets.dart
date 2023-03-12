@@ -3,7 +3,6 @@ export 'package:health_safe_paciente/src/widgets/drawer.dart';
 export 'package:health_safe_paciente/src/widgets/appbar.dart';
 export 'package:health_safe_paciente/src/widgets/alert_dialog.dart';
 export 'package:health_safe_paciente/src/widgets/drop_down_button.dart';
-export 'package:health_safe_paciente/src/widgets/date_time_picker.dart';
 export 'package:health_safe_paciente/src/widgets/imagenes.dart';
 export 'package:health_safe_paciente/src/widgets/logo_health_safe.dart';
 export 'package:health_safe_paciente/src/widgets/elevated_button.dart';

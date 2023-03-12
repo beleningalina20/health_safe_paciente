@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:health_safe_paciente/src/helpers/helpers.dart';
+import 'package:health_safe_paciente/src/theme/size_config.dart';
+import 'package:health_safe_paciente/src/theme/themes.dart';
 import 'package:health_safe_paciente/src/widgets/widgets.dart';
 
 class LogoHealthSafe extends StatelessWidget {
@@ -18,7 +19,7 @@ class LogoHealthSafe extends StatelessWidget {
           Image(
               image: const AssetImage('assets/imgs/logo_health_safe.png'),
               height: SizeConfig.height * 0.25),
-          SizedBox(height: SizeConfig.height * 0.02),
+          SizedBox(height: Dimens.padding20),
           SubtitleText(text: 'Estamos aquí para cuidarte', color: textColor)
         ]));
   }
