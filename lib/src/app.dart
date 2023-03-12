@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_safe_paciente/src/pages/pages.dart';
-import 'package:health_safe_paciente/src/routes/routes.dart';
-import 'package:health_safe_paciente/src/theme/theme_app.dart';
+import 'package:health_safe_paciente/src/pages/routes/routes.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -9,10 +8,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Health Safe - Paciente',
-        initialRoute: LoginPage.routeName,
-        routes: getApplicationRoutes(),
-        theme: ThemeApp.theme);
+      debugShowCheckedModeBanner: false,
+      title: 'Health Safe - Paciente',
+      initialRoute: LoginPage.routeName,
+      routes: getApplicationRoutes(),
+      // theme: ThemeApp.theme
+    );
   }
 }

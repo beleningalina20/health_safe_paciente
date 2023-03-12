@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:health_safe_paciente/src/global/environments.dart';
+import 'package:health_safe_paciente/src/services/utils/environments.dart';
 import 'package:health_safe_paciente/src/models/models.dart';
 
 class AutenticacionService with ChangeNotifier {
@@ -36,7 +36,7 @@ class AutenticacionService with ChangeNotifier {
 
   Future registroUsuario() async {
     isLoading = true;
-    Uri url = Uri.parse("${Environment.apiUrl}/usuarios");
+    // Uri url = Uri.parse("${Environment.apiUrl}/usuarios");
 
     try {
       /*var request = http.MultipartRequest("post", url)
@@ -84,7 +84,7 @@ class AutenticacionService with ChangeNotifier {
   Future login(String correo, String contrasena) async {
     isLoading = true;
 
-    var url = Uri.parse('${Environment.apiUrl}/api/auth/login');
+    // var url = Uri.parse('${Environment.apiUrl}/api/auth/login');
 
     try {
       /*final resp = await http.post(url,

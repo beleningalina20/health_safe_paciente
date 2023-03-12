@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ThemeApp {
+/*class ThemeApp {
   static ThemeData theme = ThemeData(
     textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -25,3 +25,4 @@ class ThemeApp {
         shadowColor: Colors.black),
   );
 }
+*/
