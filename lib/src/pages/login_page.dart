@@ -61,7 +61,6 @@ class _LoginForm extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             EmailTextFormField(
-              value: loginFormProvider.correo,
               onChanged: (String value) => loginFormProvider.correo = value,
             ),
             SizedBox(height: Dimens.padding30),

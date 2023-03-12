@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:health_safe_paciente/src/theme/themes.dart';
 
 class _TextFormFieldCustom extends StatelessWidget {
-  String value;
-
   final String hintText;
   final TextInputType keyboardType;
   final bool obscureText;
@@ -17,9 +15,8 @@ class _TextFormFieldCustom extends StatelessWidget {
   final bool readOnly;
   final void Function()? onTap;
 
-  _TextFormFieldCustom(
-      {required this.value,
-      this.hintText = '',
+  const _TextFormFieldCustom(
+      {this.hintText = '',
       this.keyboardType = TextInputType.text,
       this.obscureText = false,
       this.suffixIcon,
@@ -129,14 +126,12 @@ class _TextFormFieldCustom extends StatelessWidget {
 }
 
 class DateTimeTextFormField extends StatelessWidget {
-  DateTime? value;
   final String hintText;
   final void Function(DateTime) onChanged;
   final String? Function(DateTime?)? validator;
 
-  DateTimeTextFormField(
+  const DateTimeTextFormField(
       {super.key,
-      required this.value,
       required this.hintText,
       required this.onChanged,
       this.validator});
@@ -144,7 +139,6 @@ class DateTimeTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _TextFormFieldCustom(
-        value: value.toString(),
         hintText: hintText,
         keyboardType: TextInputType.datetime,
         onChanged: (String value) {
@@ -162,13 +156,11 @@ class DateTimeTextFormField extends StatelessWidget {
 }
 
 class BasicTextFormField extends StatelessWidget {
-  String value;
   final String hintText;
   final void Function(String)? onChanged;
 
-  BasicTextFormField({
+  const BasicTextFormField({
     super.key,
-    required this.value,
     required this.hintText,
     this.onChanged,
   });
@@ -176,7 +168,6 @@ class BasicTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _TextFormFieldCustom(
-        value: value,
         hintText: hintText,
         keyboardType: TextInputType.text,
         onChanged: onChanged,
@@ -185,15 +176,13 @@ class BasicTextFormField extends StatelessWidget {
 }
 
 class NumericTextFormField extends StatelessWidget {
-  String value;
   final String hintText;
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
   final int? maxLength;
 
-  NumericTextFormField(
+  const NumericTextFormField(
       {super.key,
-      required this.value,
       required this.hintText,
       this.onChanged,
       this.validator,
@@ -202,7 +191,6 @@ class NumericTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _TextFormFieldCustom(
-      value: value,
       hintText: hintText,
       keyboardType: const TextInputType.numberWithOptions(),
       onChanged: onChanged,
@@ -213,13 +201,11 @@ class NumericTextFormField extends StatelessWidget {
 }
 
 class EmailTextFormField extends StatelessWidget {
-  String value;
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
 
-  EmailTextFormField({
+  const EmailTextFormField({
     super.key,
-    required this.value,
     this.onChanged,
     this.validator,
   });
@@ -227,7 +213,6 @@ class EmailTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _TextFormFieldCustom(
-      value: value,
       hintText: 'Email',
       keyboardType: TextInputType.emailAddress,
       onChanged: onChanged,
@@ -257,7 +242,6 @@ class ContrasenaTextFormField extends StatelessWidget {
         final contrasenaProvider =
             Provider.of<_ContrasenaTextFormFieldProvider>(context);
         return _TextFormFieldCustom(
-          value: value,
           hintText: 'Contraseña',
           obscureText: !contrasenaProvider.esVisible,
           keyboardType: TextInputType.visiblePassword,

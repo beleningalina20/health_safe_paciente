@@ -194,7 +194,6 @@ class _DatosUsuario extends StatelessWidget {
     return Column(
       children: [
         EmailTextFormField(
-          value: registroUsuarioFormProvider.correo,
           onChanged: (String value) =>
               registroUsuarioFormProvider.correo = value,
           validator: registroUsuarioFormProvider.correoValidator,
@@ -228,19 +227,16 @@ class _DatosPersonales extends StatelessWidget {
     return Column(
       children: [
         BasicTextFormField(
-          value: registroUsuarioFormProvider.nombre,
           hintText: 'Nombre',
           onChanged: (value) => registroUsuarioFormProvider.nombre = value,
         ),
         SizedBox(height: Dimens.padding30),
         BasicTextFormField(
-          value: registroUsuarioFormProvider.apellido,
           hintText: 'Apellido',
           onChanged: (value) => registroUsuarioFormProvider.apellido = value,
         ),
         SizedBox(height: Dimens.padding30),
         NumericTextFormField(
-            value: registroUsuarioFormProvider.dni,
             hintText: 'DNI',
             onChanged: (value) => registroUsuarioFormProvider.dni = value,
             validator: registroUsuarioFormProvider.dniValidator,
@@ -259,7 +255,6 @@ class _DatosPersonales extends StatelessWidget {
         ),
         SizedBox(height: Dimens.padding30),
         DateTimeTextFormField(
-          value: registroUsuarioFormProvider.fechaNacimiento,
           onChanged: (DateTime? value) {
             registroUsuarioFormProvider.fechaNacimiento = value;
           },
