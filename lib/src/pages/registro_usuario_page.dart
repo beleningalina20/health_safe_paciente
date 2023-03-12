@@ -1,340 +1,346 @@
+import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:health_safe_paciente/src/services/services.dart';
+import 'package:health_safe_paciente/src/pages/login_page.dart';
 import 'package:health_safe_paciente/src/providers/providers.dart';
+import 'package:health_safe_paciente/src/services/usuario_service.dart';
+import 'package:health_safe_paciente/src/services/utils/services_status.dart';
+import 'package:health_safe_paciente/src/theme/size_config.dart';
 import 'package:health_safe_paciente/src/theme/themes.dart';
 import 'package:health_safe_paciente/src/widgets/widgets.dart';
-import 'package:health_safe_paciente/src/helpers/functions/functions.dart';
-import 'package:health_safe_paciente/src/pages/pages.dart';
 
 class RegistroUsuarioPage extends StatelessWidget {
-  static const String routeName = 'RegistroUsuarioPage';
+  static const String routeName = "RegistoUsuarioPage";
   const RegistroUsuarioPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(); /* SafeArea(
-        child: Scaffold(
-            backgroundColor: ColorsApp.azulLogin,
-            body: Padding(
-                padding: EdgeInsets.only(
-                    top: SizeConfig.height * 0.02,
-                    left: SizeConfig.height * 0.02,
-                    right: SizeConfig.height * 0.02),
-                child: ChangeNotifierProvider(
-                  create: (_) => RegistroUsuarioProvider(),
-                  child: Column(
-                    children: [
-                      _TituloRegistroPaciente(),
-                      SizedBox(height: SizeConfig.height * 0.015),
-                      _FormRegistroUsuario(),
-                      SizedBox(height: SizeConfig.height * 0.015),
-                      _ItemsPageView(),
-                      SizedBox(height: SizeConfig.height * 0.01),
-                      _DeclaracionTerminosCondiciones(),
-                      _BotonFinalizar()
-                    ],
-                  ),
-                ))));*/
-  }
-}
-
-/*class _TituloRegistroPaciente extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      'Registro de usuario',
-      style: Theme.of(context)
-          .textTheme
-          .headline1!
-          .copyWith(color: Colors.white, decoration: TextDecoration.underline),
+    return SafeArea(
+      child: Scaffold(
+          appBar: RegistroAppbar(
+              title: "Registro de usuario",
+              onPressed: () {} // TODO Mostrar ayuda
+              ),
+          backgroundColor: ColorsApp.azulLogin,
+          body: MultiProvider(providers: [
+            ChangeNotifierProvider(create: (_) => UsuarioService()),
+            ChangeNotifierProvider(
+                create: (_) => RegistroUsuarioFormProvider()),
+          ], child: const _RegistroUsuarioForm())),
     );
   }
 }
 
-class _FormRegistroUsuario extends StatelessWidget {
+class _RegistroUsuarioForm extends StatelessWidget {
+  const _RegistroUsuarioForm();
+
   @override
   Widget build(BuildContext context) {
-    final registroUsuarioProvider =
-        Provider.of<RegistroUsuarioProvider>(context);
+    final registroUsuarioFormProvider =
+        Provider.of<RegistroUsuarioFormProvider>(context);
+    final usuarioService = Provider.of<UsuarioService>(context);
 
-    return Expanded(
-      child: Form(
-        key: registroUsuarioProvider.formKey,
-        child: PageView(
-          scrollDirection: Axis.horizontal,
-          controller: registroUsuarioProvider.pageController,
-          onPageChanged: (value) =>
-              registroUsuarioProvider.paginaActual = value,
-          children: [
-            _CorreoContrasenaImagenPerfilTextFormField(),
-            _InformacionPersonalTextFormField(),
-            _ImagenesDniFormField()
-          ]
-              .map((page) => SingleChildScrollView(
-                    child: Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: SizeConfig.height * 0.015),
-                        child: page),
-                  ))
-              .toList(),
-        ),
+    return Form(
+      key: registroUsuarioFormProvider.formKey,
+      autovalidateMode: AutovalidateMode.disabled,
+      child: Column(
+        children: [
+          Expanded(
+            child: Theme(
+              data: ThemeData(
+                  canvasColor: ColorsApp.azulLogin,
+                  shadowColor: Colors.transparent),
+              child: Stepper(
+                // https://morioh.com/p/39c674119b0f
+                margin: const EdgeInsets.all(0),
+                currentStep: registroUsuarioFormProvider.pasoActual,
+                onStepCancel: () {
+                  if (registroUsuarioFormProvider.pasoActual > 0) {
+                    registroUsuarioFormProvider.pasoActual--;
+                  }
+                },
+                onStepContinue: () {
+                  if (registroUsuarioFormProvider.pasoActual < 2) {
+                    registroUsuarioFormProvider.pasoActual++;
+                  }
+                },
+                onStepTapped: (step) =>
+                    registroUsuarioFormProvider.pasoActual = step,
+                controlsBuilder:
+                    (BuildContext context, ControlsDetails details) {
+                  return Container();
+                },
+                physics: const BouncingScrollPhysics(),
+                type: StepperType.horizontal,
+                steps: [
+                  Step(
+                      title: Text(
+                          (registroUsuarioFormProvider.pasoActual == 0)
+                              ? "Datos del usuario"
+                              : "",
+                          style: const TextStyle(color: Colors.white)),
+                      state: (registroUsuarioFormProvider.pasoActual > 0)
+                          ? StepState.complete
+                          : StepState.indexed,
+                      isActive: registroUsuarioFormProvider.pasoActual >= 0,
+                      content: const _DatosUsuario()),
+                  Step(
+                      title: Text(
+                          (registroUsuarioFormProvider.pasoActual == 1)
+                              ? "Datos personales"
+                              : "",
+                          style: const TextStyle(color: Colors.white)),
+                      state: (registroUsuarioFormProvider.pasoActual > 1)
+                          ? StepState.complete
+                          : StepState.indexed,
+                      isActive: registroUsuarioFormProvider.pasoActual >= 1,
+                      content: const _DatosPersonales()),
+                  Step(
+                      title: Text(
+                          (registroUsuarioFormProvider.pasoActual == 2)
+                              ? "Imagenes DNI"
+                              : "",
+                          style: const TextStyle(color: Colors.white)),
+                      state: (registroUsuarioFormProvider.pasoActual > 2)
+                          ? StepState.complete
+                          : StepState.indexed,
+                      isActive: registroUsuarioFormProvider.pasoActual >= 2,
+                      content: const _ImagenesDni()),
+                ],
+              ),
+            ),
+          ),
+          const _DeclaracionTerminosCondiciones(),
+          (usuarioService.registroStatus?.status != Status.LOADING)
+              ? ElevatedButtonCustom(
+                  margin: EdgeInsets.all(Dimens.padding20),
+                  onPressed: (registroUsuarioFormProvider.isValidForm())
+                      ? () async {
+                          FocusScope.of(context).unfocus();
+
+                          await registro(
+                              context,
+                              registroUsuarioFormProvider.data(),
+                              registroUsuarioFormProvider.imagenPerfil!,
+                              registroUsuarioFormProvider.imagenDniFrente!,
+                              registroUsuarioFormProvider.imagenDniDorso!);
+                        }
+                      : () {
+                          FocusScope.of(context).unfocus();
+                          if (registroUsuarioFormProvider.pasoActual == 2) {
+                            registroUsuarioFormProvider.pasoActual = 0;
+                          } else {
+                            registroUsuarioFormProvider.pasoActual++;
+                          }
+                        },
+                  text: (registroUsuarioFormProvider.isValidForm())
+                      ? "Registrarse"
+                      : "Continuar",
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.blue,
+                )
+              : Padding(
+                  padding: EdgeInsets.all(Dimens.padding20),
+                  child: const CircularProgressIndicator())
+        ],
       ),
     );
   }
-}
 
-class _CorreoContrasenaImagenPerfilTextFormField extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final registroUsuarioProvider =
-        Provider.of<RegistroUsuarioProvider>(context);
+  Future<void> registro(BuildContext context, Map<String, String> data,
+      File imagenPerfil, File imagenDniFrente, File imagenDniDorso) async {
+    final usuarioService = Provider.of<UsuarioService>(context, listen: false);
 
-    return Column(
-      children: [
-        TextFormFieldCustom(
-            label: 'Correo',
-            labelColor: Colors.white,
-            keyboardType: TextInputType.emailAddress,
-            value: registroUsuarioProvider.correo,
-            onChanged: (String value) => registroUsuarioProvider.correo = value,
-            validator: registroUsuarioProvider.correoValidator),
-        SizedBox(height: SizeConfig.height * 0.015),
-        TextFormFieldCustom(
-          label: 'Contraseña',
-          labelColor: Colors.white,
-          isPassword: true,
-          value: registroUsuarioProvider.contrasena,
-          validator: registroUsuarioProvider.contrasenaValidator,
-          onChanged: (String value) =>
-              registroUsuarioProvider.contrasena = value,
-        ),
-        SizedBox(height: SizeConfig.height * 0.015),
-        Text('Imagen de perfil',
-            style: Theme.of(context)
-                .textTheme
-                .bodyText2!
-                .copyWith(color: Colors.white)),
-        SizedBox(height: SizeConfig.height * 0.015),
-        Center(
-            child: ImagenPerfil(
-          cambiarImagenPerfil: true,
-          imagenPerfil: registroUsuarioProvider.imagenPerfil,
-          onChanged: (value) => registroUsuarioProvider.imagenPerfil = value,
-        )),
-      ],
-    );
-  }
-}
-
-class _InformacionPersonalTextFormField extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final registroUsuarioProvider =
-        Provider.of<RegistroUsuarioProvider>(context);
-
-    return Column(
-      children: [
-        TextFormFieldCustom(
-          label: 'Nombre',
-          labelColor: Colors.white,
-          value: registroUsuarioProvider.nombre,
-          validator: (String? value) =>
-              (value != '') ? null : 'Ingrese su nombre',
-          onChanged: (String value) => registroUsuarioProvider.nombre = value,
-        ),
-        SizedBox(height: SizeConfig.height * 0.015),
-        TextFormFieldCustom(
-          label: 'Apellido',
-          labelColor: Colors.white,
-          value: registroUsuarioProvider.apellido,
-          validator: (String? value) =>
-              (value != '') ? null : 'Ingrese su apellido',
-          onChanged: (String value) => registroUsuarioProvider.apellido = value,
-        ),
-        SizedBox(height: SizeConfig.height * 0.015),
-        TextFormFieldCustom(
-          label: 'Dni',
-          keyboardType: TextInputType.number,
-          labelColor: Colors.white,
-          value: registroUsuarioProvider.dni,
-          validator: registroUsuarioProvider.dniValidator,
-          onChanged: (String value) => registroUsuarioProvider.dni = value,
-        ),
-        SizedBox(height: SizeConfig.height * 0.015),
-        DropDownButtonCustom<String>(
-          label: 'Sexo',
-          labelColor: Colors.white,
-          items: registroUsuarioProvider.sexos,
-          value: registroUsuarioProvider.sexo,
-          onChanged: (String? value) =>
-              registroUsuarioProvider.sexo = value ?? 'Femenino',
-        ),
-        SizedBox(height: SizeConfig.height * 0.015),
-        TextFormFieldCustom(
-            label: 'Fecha de Nacimiento',
-            onTap: () async {
-              final DateTime? selectedDate =
-                  await DatePickerCustom().seleccionarFecha(context);
-              if (selectedDate != null) {
-                registroUsuarioProvider.fechaNacimiento = selectedDate;
-              }
-            },
-            readOnly: true,
-            keyboardType: TextInputType.datetime,
-            labelColor: Colors.white,
-            value:
-                registroUsuarioProvider.fechaNacimiento?.longDateTimeString() ??
-                    '',
-            onChanged: (String value) =>
-                registroUsuarioProvider.fechaNacimiento = DateTime.parse(value),
-            validator: registroUsuarioProvider.fechaNacimientoValidator),
-      ],
-    );
-  }
-}
-
-class _ImagenesDniFormField extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final registroUsuarioProvider =
-        Provider.of<RegistroUsuarioProvider>(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Imagen de dni frente',
-            style: Theme.of(context)
-                .textTheme
-                .bodyText2!
-                .copyWith(color: Colors.white)),
-        Center(
-            child: ImagenDni(
-          tipoImagenDni: 'frente',
-          imagenDni: registroUsuarioProvider.imagenDniFrente,
-          cambiarImagenDni: true,
-          onChanged: (value) => registroUsuarioProvider.imagenDniFrente = value,
-        )),
-        SizedBox(height: SizeConfig.height * 0.015),
-        Text('Imagen de dni dorso',
-            style: Theme.of(context)
-                .textTheme
-                .bodyText2!
-                .copyWith(color: Colors.white)),
-        Center(
-            child: ImagenDni(
-          tipoImagenDni: 'dorso',
-          imagenDni: registroUsuarioProvider.imagenDniDorso,
-          cambiarImagenDni: true,
-          onChanged: (value) => registroUsuarioProvider.imagenDniDorso = value,
-        )),
-      ],
-    );
-  }
-}
-
-class _ItemsPageView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final registroUsuarioProvider =
-        Provider.of<RegistroUsuarioProvider>(context);
-
-    final List<Widget> items = [];
-    for (var i = 0; i < registroUsuarioProvider.cantidadPages; i++) {
-      if (i == registroUsuarioProvider.paginaActual) {
-        items.add(Icon(Icons.circle,
-            size: SizeConfig.height * 0.02, color: ColorsApp.celesteFondo));
-      } else {
-        items.add(Icon(Icons.circle,
-            size: SizeConfig.height * 0.015, color: Colors.grey));
+    await usuarioService
+        .registro(data, imagenPerfil, imagenDniFrente, imagenDniDorso)
+        .then((value) {
+      switch (usuarioService.registroStatus?.status) {
+        case Status.COMPLETED:
+          // TODO Navegar a registro de paciente
+          break;
+        case Status.ERROR:
+          showDialogCustom(
+              context,
+              [
+                const DescriptionText(
+                  text: "Este email ya se encuentra registrado. Inicie sesión",
+                  textAlign: TextAlign.center,
+                  fontWeight: FontWeight.bold,
+                ),
+                Icon(Icons.warning,
+                    color: Colors.orange, size: SizeConfig.height * 0.1),
+              ],
+              onAccept: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                  LoginPage.routeName, (route) => false),
+              barrierDismissible: false,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center);
+          break;
+        default:
       }
-    }
+    });
+  }
+}
 
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: items);
+class _DatosUsuario extends StatelessWidget {
+  const _DatosUsuario();
+
+  @override
+  Widget build(BuildContext context) {
+    final registroUsuarioFormProvider =
+        Provider.of<RegistroUsuarioFormProvider>(context, listen: true);
+
+    return Column(
+      children: [
+        EmailTextFormField(
+          value: registroUsuarioFormProvider.correo,
+          onChanged: (String value) =>
+              registroUsuarioFormProvider.correo = value,
+          validator: registroUsuarioFormProvider.correoValidator,
+        ),
+        SizedBox(height: Dimens.padding30),
+        ContrasenaTextFormField(
+          value: registroUsuarioFormProvider.contrasena,
+          onChanged: (String value) =>
+              registroUsuarioFormProvider.contrasena = value,
+          validator: registroUsuarioFormProvider.contrasenaValidator,
+          withMaxLenght: true,
+        ),
+        SizedBox(height: Dimens.padding30),
+        ImagenPerfil(
+            onChanged: (value) =>
+                registroUsuarioFormProvider.imagenPerfil = value,
+            imagenPerfil: registroUsuarioFormProvider.imagenPerfil)
+      ],
+    );
+  }
+}
+
+class _DatosPersonales extends StatelessWidget {
+  const _DatosPersonales();
+
+  @override
+  Widget build(BuildContext context) {
+    final registroUsuarioFormProvider =
+        Provider.of<RegistroUsuarioFormProvider>(context, listen: true);
+
+    return Column(
+      children: [
+        BasicTextFormField(
+          value: registroUsuarioFormProvider.nombre,
+          hintText: 'Nombre',
+          onChanged: (value) => registroUsuarioFormProvider.nombre = value,
+        ),
+        SizedBox(height: Dimens.padding30),
+        BasicTextFormField(
+          value: registroUsuarioFormProvider.apellido,
+          hintText: 'Apellido',
+          onChanged: (value) => registroUsuarioFormProvider.apellido = value,
+        ),
+        SizedBox(height: Dimens.padding30),
+        NumericTextFormField(
+            value: registroUsuarioFormProvider.dni,
+            hintText: 'DNI',
+            onChanged: (value) => registroUsuarioFormProvider.dni = value,
+            validator: registroUsuarioFormProvider.dniValidator,
+            maxLength: 8),
+        SizedBox(height: Dimens.padding30),
+        Theme(
+          data: ThemeData(canvasColor: Colors.white),
+          child: DropDownButtonCustom<String>(
+            label: 'Sexo',
+            labelColor: Colors.white,
+            items: registroUsuarioFormProvider.sexos,
+            value: registroUsuarioFormProvider.sexo,
+            onChanged: (value) =>
+                registroUsuarioFormProvider.sexo = value ?? 'Femenino',
+          ),
+        ),
+        SizedBox(height: Dimens.padding30),
+        DateTimeTextFormField(
+          value: registroUsuarioFormProvider.fechaNacimiento,
+          onChanged: (DateTime? value) {
+            registroUsuarioFormProvider.fechaNacimiento = value;
+          },
+          hintText: 'Fecha de nacimiento',
+          // validator: registroUsuarioFormProvider.fechaNacimientoValidator
+        )
+      ],
+    );
+  }
+}
+
+class _ImagenesDni extends StatelessWidget {
+  const _ImagenesDni();
+
+  @override
+  Widget build(BuildContext context) {
+    final registroUsuarioFormProvider =
+        Provider.of<RegistroUsuarioFormProvider>(context, listen: true);
+
+    return Column(
+      children: [
+        ImagenDni(
+            imagenDni: registroUsuarioFormProvider.imagenDniFrente,
+            imagenPlaceholder: const AssetImage('assets/imgs/dni_frente.png'),
+            onChanged: (value) =>
+                registroUsuarioFormProvider.imagenDniFrente = value),
+        SizedBox(height: Dimens.padding30),
+        ImagenDni(
+            imagenDni: registroUsuarioFormProvider.imagenDniDorso,
+            imagenPlaceholder: const AssetImage('assets/imgs/dni_dorso.png'),
+            onChanged: (value) =>
+                registroUsuarioFormProvider.imagenDniDorso = value)
+      ],
+    );
   }
 }
 
 class _DeclaracionTerminosCondiciones extends StatelessWidget {
+  const _DeclaracionTerminosCondiciones();
+
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-          text: "Al registrarme, declaro que soy mayor de edad aceptando los ",
-          style: Theme.of(context)
-              .textTheme
-              .subtitle1!
-              .copyWith(color: Colors.white),
-          children: [
-            TextSpan(
-                text: "términos y condiciones ",
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    // Todo Navegar a los terminos y condiciones
-                  },
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    color: Colors.blue[200],
-                    decoration: TextDecoration.underline)),
-            TextSpan(
-                text: " y las ",
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle1!
-                    .copyWith(color: Colors.white)),
-            TextSpan(
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: Dimens.padding20),
+      child: Text.rich(
+        TextSpan(
+            text: "Al registrarme, acepto los ",
+            style: TextStyle(fontSize: Dimens.fontSize18, color: Colors.white),
+            children: [
+              TextSpan(
+                  text: "términos y condiciones ",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      // Todo Navegar a los terminos y condiciones
+                    },
+                  style: TextStyle(
+                      fontSize: Dimens.fontSize18,
+                      color: Colors.lightBlue,
+                      decoration: TextDecoration.underline)),
+              TextSpan(
+                  text: " y ",
+                  style: TextStyle(
+                      fontSize: Dimens.fontSize18, color: Colors.white)),
+              TextSpan(
                 text: "politicas de privacidad ",
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     // Todo Navegar a las politicas de privacidad
                   },
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    color: Colors.blue[200],
-                    decoration: TextDecoration.underline)),
-            TextSpan(
-                text: "de Health Safe",
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle1!
-                    .copyWith(color: Colors.white))
-          ]),
-      textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: Dimens.fontSize18,
+                    color: Colors.lightBlue,
+                    decoration: TextDecoration.underline),
+              ),
+              TextSpan(
+                  text: "de Health Safe",
+                  style: TextStyle(
+                      fontSize: Dimens.fontSize18, color: Colors.white))
+            ]),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
-
-class _BotonFinalizar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final registroUsuarioProvider =
-        Provider.of<RegistroUsuarioProvider>(context);
-
-    final autenticacionService = Provider.of<AutenticacionService>(context);
-
-    return (!autenticacionService.isLoading)
-        ? ElevatedButtonCustom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.blue,
-            onPressed: (!registroUsuarioProvider.isLoading)
-                ? () => registrarUsuario(context)
-                : () {},
-            text: 'Finalizar')
-        : const CircularProgressIndicatorCustom();
-  }
-
-  void registrarUsuario(BuildContext context) async {
-    final registroUsuarioProvider =
-        Provider.of<RegistroUsuarioProvider>(context, listen: false);
-    FocusScope.of(context).unfocus();
-    if (!registroUsuarioProvider.isValidForm()) return;
-
-    final autenticacionSevice =
-        Provider.of<AutenticacionService>(context, listen: false);
-
-    await autenticacionSevice
-        .registroUsuario()
-        .then((resp) =>
-            Navigator.of(context).pushReplacementNamed(HomePage.routeName))
-        .onError((error, stackTrace) {});
-  }
-}
-*/

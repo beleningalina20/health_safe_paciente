@@ -21,7 +21,7 @@ class CircleAvatarImagenPerfil extends StatelessWidget {
         backgroundImage: image,
         // child: const Text("BI"),
         // foregroundColor: Colors.blue,
-        // foregroundImage: const AssetImage('assets/images/logo_health_safe.png'),
+        // foregroundImage: const AssetImage('assets/imgs/logo_health_safe.png'),
         // key: ,
         // maxRadius: , No se lo define si se define el radius
         // minRadius: ,
@@ -50,7 +50,7 @@ class ImagenPerfil extends StatelessWidget {
       CircleAvatar(
           backgroundImage: (imagenPerfil != null)
               ? FileImage(imagenPerfil!)
-              : const AssetImage('assets/images/no-person.png')
+              : const AssetImage('assets/imgs/no-person.png')
                   as ImageProvider<Object>?,
           radius: Dimens.circleAvatarRadius100),
       Positioned(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_safe_paciente/src/widgets/utils/pick_date_time.dart';
 import 'package:provider/provider.dart';
 import 'package:health_safe_paciente/src/theme/themes.dart';
 
@@ -13,6 +14,8 @@ class _TextFormFieldCustom extends StatelessWidget {
   final String? Function(String?)? validator;
   final int? maxLength;
   final TextCapitalization textCapitalization;
+  final bool readOnly;
+  final void Function()? onTap;
 
   _TextFormFieldCustom(
       {required this.value,
@@ -23,7 +26,9 @@ class _TextFormFieldCustom extends StatelessWidget {
       this.onChanged,
       this.validator,
       this.maxLength,
-      this.textCapitalization = TextCapitalization.none});
+      this.textCapitalization = TextCapitalization.none,
+      this.readOnly = false,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +65,8 @@ class _TextFormFieldCustom extends StatelessWidget {
       /*onEditingComplete: ,
       onFieldSubmitted: ,
       onSaved: ,*/
-      // onTap: onTap,
-      // readOnly: readOnly,
+      onTap: onTap,
+      readOnly: readOnly,
       /*restorationId: ,
       scrollController: ,
       scrollPadding: ,
@@ -124,27 +129,35 @@ class _TextFormFieldCustom extends StatelessWidget {
 }
 
 class DateTimeTextFormField extends StatelessWidget {
-  String value;
+  DateTime? value;
   final String hintText;
-  final void Function(String)? onChanged;
-  final String? Function(String?)? validator;
+  final void Function(DateTime) onChanged;
+  final String? Function(DateTime?)? validator;
 
   DateTimeTextFormField(
       {super.key,
       required this.value,
       required this.hintText,
-      this.onChanged,
+      required this.onChanged,
       this.validator});
 
   @override
   Widget build(BuildContext context) {
     return _TextFormFieldCustom(
-      value: value,
-      hintText: hintText,
-      keyboardType: TextInputType.datetime,
-      onChanged: onChanged,
-      validator: validator,
-    );
+        value: value.toString(),
+        hintText: hintText,
+        keyboardType: TextInputType.datetime,
+        onChanged: (String value) {
+          onChanged(DateTime.parse(value));
+        },
+        readOnly: true,
+        onTap: () async {
+          final DateTime? selectedDate = await pickDateTime(context,
+              DateTime(1920), DateTime.now().add(const Duration(days: 1)));
+          if (selectedDate != null) {
+            onChanged(selectedDate);
+          }
+        });
   }
 }
 

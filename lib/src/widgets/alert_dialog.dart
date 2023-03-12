@@ -25,7 +25,7 @@ void showDialogCustom(BuildContext context, List<Widget> content,
             Padding(
               padding: EdgeInsets.only(right: Dimens.padding20),
               child: Image(
-                  image: const AssetImage('assets/images/logo_health_safe.png'),
+                  image: const AssetImage('assets/imgs/logo_health_safe.png'),
                   height: SizeConfig.height * 0.05),
             ),
             const BodyText(text: "Health Safe"),
