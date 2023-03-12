@@ -18,7 +18,7 @@ class DrawerCustom extends StatelessWidget {
 
     return Drawer(
       backgroundColor: ColorsApp.azulLogin,
-      width: SizeConfig.width * 0.6,
+      width: SizeConfig.width * 0.7,
       child:
           Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
         _HeaderDrawer(

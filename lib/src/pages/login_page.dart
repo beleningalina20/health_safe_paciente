@@ -100,6 +100,9 @@ class _LoginForm extends StatelessWidget {
     await service.login(correo, contrasena).then((value) {
       switch (service.loginStatus?.status) {
         case Status.COMPLETED:
+          // TODO Validar que el usuario tenga creado su registro de paciente
+          // true -> home
+          // false -> registroPaciente
           Navigator.of(context).pushReplacementNamed(HomePage.routeName);
           break;
 

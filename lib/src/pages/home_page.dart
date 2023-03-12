@@ -1,39 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:health_safe_paciente/src/theme/colors_app.dart';
+import 'package:health_safe_paciente/src/theme/themes.dart';
 import 'package:health_safe_paciente/src/widgets/widgets.dart';
 
 class HomePage extends StatelessWidget {
-  static const String routeName = 'HomePage';
+  static const String routeName = "HomePage";
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(); /*SafeArea(
-      child: Scaffold(
-        appBar: const AppbarCustom(),
-        body: Padding(
-          padding: EdgeInsets.all(SizeConfig.height * 0.02),
-          child: SingleChildScrollView(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const LogoHealthSafe(textColor: Colors.black),
-              SizedBox(height: SizeConfig.height * 0.1),
-              ElevatedButtonCustom(
-                onPressed: () {},
-                text: 'Sacar turno',
-                backgroundColor: ColorsApp.azulBusqueda,
-              ),
-              SizedBox(height: SizeConfig.height * 0.03),
-              ElevatedButtonCustom(
-                  onPressed: () {},
-                  text: 'Solicitar asistencia inmediata',
-                  backgroundColor: ColorsApp.rojoAsistenciaInmediata),
-            ],
-          )),
-        ),
-        drawer: const DrawerCustom(),
-      ),
-    );*/
+    return SafeArea(
+        child: Scaffold(
+            appBar: const AppbarCustom(),
+            backgroundColor: Colors.white,
+            body: Padding(
+                padding: EdgeInsets.all(Dimens.padding20),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: const <Widget>[
+                      LogoHealthSafe(textColor: Colors.black),
+                      _BotonesNavegacionHome()
+                    ])),
+            drawer: const DrawerCustom()));
+  }
+}
+
+class _BotonesNavegacionHome extends StatelessWidget {
+  const _BotonesNavegacionHome();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      ElevatedButtonCustom(
+          text: 'Sacar turno',
+          onPressed: () {
+            // TODO Navegar sacar turnos
+          },
+          backgroundColor: ColorsApp.azulBusqueda,
+          margin: EdgeInsets.only(bottom: Dimens.padding40)),
+      ElevatedButtonCustom(
+          text: "Solicitar asistencia inmediata",
+          onPressed: () {
+            // TODO Navegar sala de asistencia inmediata
+          },
+          backgroundColor: ColorsApp.rojoAsistenciaInmediata,
+          margin: EdgeInsets.only(bottom: Dimens.padding40))
+    ]);
   }
 }
