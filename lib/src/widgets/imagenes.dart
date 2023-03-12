@@ -39,30 +39,46 @@ class CircleAvatarImagenPerfil extends StatelessWidget {
 
 class ImagenPerfil extends StatelessWidget {
   File? imagenPerfil;
+  final Color? labelColor;
   final void Function(File) onChanged;
 
   ImagenPerfil(
-      {super.key, required this.onChanged, required this.imagenPerfil});
+      {super.key,
+      required this.onChanged,
+      required this.imagenPerfil,
+      this.labelColor});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(clipBehavior: Clip.none, children: <Widget>[
-      CircleAvatar(
-          backgroundImage: (imagenPerfil != null)
-              ? FileImage(imagenPerfil!)
-              : const AssetImage('assets/imgs/no-person.png')
-                  as ImageProvider<Object>?,
-          radius: Dimens.circleAvatarRadius100),
-      Positioned(
-          top: SizeConfig.height * 0.15,
-          left: SizeConfig.width * 0.3,
-          child: CircleAvatar(
-              backgroundColor: ColorsApp.azulBusqueda,
-              radius: Dimens.circleAvatarRadius30,
-              child: IconButton(
-                  onPressed: () => seleccionImagen(context, onChanged),
-                  icon: const Icon(Icons.camera_alt, color: Colors.white))))
-    ]);
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DescriptionText(
+            text: 'Imagen de perfil', color: labelColor ?? Colors.white),
+        SizedBox(height: Dimens.padding10),
+        Center(
+          child: Stack(clipBehavior: Clip.none, children: <Widget>[
+            CircleAvatar(
+                backgroundImage: (imagenPerfil != null)
+                    ? FileImage(imagenPerfil!)
+                    : const AssetImage('assets/imgs/no-person.png')
+                        as ImageProvider<Object>?,
+                radius: Dimens.circleAvatarRadius100),
+            Positioned(
+                top: SizeConfig.height * 0.15,
+                left: SizeConfig.width * 0.3,
+                child: CircleAvatar(
+                    backgroundColor: ColorsApp.azulBusqueda,
+                    radius: Dimens.circleAvatarRadius30,
+                    child: IconButton(
+                        onPressed: () => seleccionImagen(context, onChanged),
+                        icon:
+                            const Icon(Icons.camera_alt, color: Colors.white))))
+          ]),
+        ),
+      ],
+    );
   }
 }
 
@@ -70,37 +86,53 @@ class ImagenDni extends StatelessWidget {
   File? imagenDni;
   AssetImage imagenPlaceholder;
   final void Function(File) onChanged;
+  final String label;
+  final Color? labelColor;
 
   ImagenDni(
       {super.key,
       required this.imagenDni,
       required this.imagenPlaceholder,
-      required this.onChanged});
+      required this.onChanged,
+      required this.label,
+      this.labelColor});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClipRRect(
-            borderRadius: BorderRadius.circular(Dimens.roundedCornerRadius20),
-            child: Image(
-              image: (imagenDni != null)
-                  ? FileImage(imagenDni!)
-                  : imagenPlaceholder as ImageProvider<Object>,
-              fit: BoxFit.cover,
-              height: SizeConfig.height * 0.25,
-              width: double.infinity,
-            )),
-        Positioned(
-            top: SizeConfig.height * 0.21,
-            left: SizeConfig.height * 0.37,
-            child: CircleAvatar(
-                backgroundColor: ColorsApp.azulBusqueda,
-                radius: Dimens.circleAvatarRadius30,
-                child: IconButton(
-                    onPressed: () => seleccionImagen(context, onChanged),
-                    icon: const Icon(Icons.camera_alt, color: Colors.white)))),
+        DescriptionText(text: label, color: labelColor ?? Colors.white),
+        SizedBox(height: Dimens.padding10),
+        Center(
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(Dimens.roundedCornerRadius20),
+                  child: Image(
+                    image: (imagenDni != null)
+                        ? FileImage(imagenDni!)
+                        : imagenPlaceholder as ImageProvider<Object>,
+                    fit: BoxFit.cover,
+                    height: SizeConfig.height * 0.25,
+                    width: double.infinity,
+                  )),
+              Positioned(
+                  top: SizeConfig.height * 0.21,
+                  left: SizeConfig.height * 0.37,
+                  child: CircleAvatar(
+                      backgroundColor: ColorsApp.azulBusqueda,
+                      radius: Dimens.circleAvatarRadius30,
+                      child: IconButton(
+                          onPressed: () => seleccionImagen(context, onChanged),
+                          icon: const Icon(Icons.camera_alt,
+                              color: Colors.white)))),
+            ],
+          ),
+        ),
       ],
     );
   }

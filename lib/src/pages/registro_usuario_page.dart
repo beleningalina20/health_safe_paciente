@@ -281,12 +281,14 @@ class _ImagenesDni extends StatelessWidget {
     return Column(
       children: [
         ImagenDni(
+            label: 'Imagen DNI frente',
             imagenDni: registroUsuarioFormProvider.imagenDniFrente,
             imagenPlaceholder: const AssetImage('assets/imgs/dni_frente.png'),
             onChanged: (value) =>
                 registroUsuarioFormProvider.imagenDniFrente = value),
         SizedBox(height: Dimens.padding30),
         ImagenDni(
+            label: 'Imagen DNI dorso',
             imagenDni: registroUsuarioFormProvider.imagenDniDorso,
             imagenPlaceholder: const AssetImage('assets/imgs/dni_dorso.png'),
             onChanged: (value) =>
