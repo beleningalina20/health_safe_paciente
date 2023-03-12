@@ -1,5 +1,5 @@
 extension DateTimeExtensions on DateTime {
-  String longDateTimeString() {
+  String convertDateTimeToString() {
     return '$year-${(day < 10) ? '0$day' : day}-${(month < 10) ? '0$month' : month}';
   }
 }

@@ -14,23 +14,26 @@ class _TextFormFieldCustom extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final bool readOnly;
   final void Function()? onTap;
+  final TextEditingController? controller;
 
-  const _TextFormFieldCustom(
-      {this.hintText = '',
-      this.keyboardType = TextInputType.text,
-      this.obscureText = false,
-      this.suffixIcon,
-      this.onChanged,
-      this.validator,
-      this.maxLength,
-      this.textCapitalization = TextCapitalization.none,
-      this.readOnly = false,
-      this.onTap});
+  const _TextFormFieldCustom({
+    this.hintText = '',
+    this.keyboardType = TextInputType.text,
+    this.obscureText = false,
+    this.suffixIcon,
+    this.onChanged,
+    this.validator,
+    this.maxLength,
+    this.textCapitalization = TextCapitalization.none,
+    this.readOnly = false,
+    this.onTap,
+    this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      // controller: ,
+      controller: controller,
       /*autocorrect: ,
       autofillHints: ,
       autofocus: ,*/
@@ -43,11 +46,11 @@ class _TextFormFieldCustom extends StatelessWidget {
       enableIMEPersonalizedLearning: ,
       enableInteractiveSelection: ,
       enableSuggestions: ,*/
-      // enabled: enabled,
+      enabled: true,
       /*expands: ,
-      focusNode: ,
-      initialValue: ,
-      inputFormatters: [],
+      focusNode: ,*/
+      // initialValue: initialValue,
+      /*inputFormatters: [],
       key: ,
       keyboardAppearance: ,*/
       keyboardType: keyboardType,
@@ -129,20 +132,24 @@ class DateTimeTextFormField extends StatelessWidget {
   final String hintText;
   final void Function(DateTime) onChanged;
   final String? Function(DateTime?)? validator;
+  final TextEditingController? controller;
 
   const DateTimeTextFormField(
       {super.key,
       required this.hintText,
       required this.onChanged,
+      this.controller,
       this.validator});
 
   @override
   Widget build(BuildContext context) {
     return _TextFormFieldCustom(
+        controller: controller,
         hintText: hintText,
         keyboardType: TextInputType.datetime,
         onChanged: (String value) {
           onChanged(DateTime.parse(value));
+          controller?.text = value;
         },
         readOnly: true,
         onTap: () async {
@@ -150,6 +157,8 @@ class DateTimeTextFormField extends StatelessWidget {
               DateTime(1920), DateTime.now().add(const Duration(days: 1)));
           if (selectedDate != null) {
             onChanged(selectedDate);
+          controller?.text = selectedDate.toString();
+
           }
         });
   }

@@ -9,6 +9,7 @@ import 'package:health_safe_paciente/src/services/utils/services_status.dart';
 import 'package:health_safe_paciente/src/theme/size_config.dart';
 import 'package:health_safe_paciente/src/theme/themes.dart';
 import 'package:health_safe_paciente/src/widgets/widgets.dart';
+import 'package:health_safe_paciente/src/helpers/functions/date_time_extension.dart';
 
 class RegistroUsuarioPage extends StatelessWidget {
   static const String routeName = "RegistoUsuarioPage";
@@ -255,6 +256,9 @@ class _DatosPersonales extends StatelessWidget {
         ),
         SizedBox(height: Dimens.padding30),
         DateTimeTextFormField(
+          controller: TextEditingController(
+              text: registroUsuarioFormProvider.fechaNacimiento
+                  ?.convertDateTimeToString()),
           onChanged: (DateTime? value) {
             registroUsuarioFormProvider.fechaNacimiento = value;
           },
