@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_safe_paciente/src/pages/busqueda_profesionales_page.dart';
 import 'package:health_safe_paciente/src/theme/themes.dart';
 import 'package:health_safe_paciente/src/widgets/widgets.dart';
 
@@ -32,9 +33,8 @@ class _BotonesNavegacionHome extends StatelessWidget {
     return Column(children: [
       ElevatedButtonCustom(
           text: 'Sacar turno',
-          onPressed: () {
-            // TODO Navegar sacar turnos
-          },
+          onPressed: () =>
+              Navigator.pushNamed(context, BusquedaProfesionalesPage.routeName),
           backgroundColor: ColorsApp.azulBusqueda,
           margin: EdgeInsets.only(bottom: Dimens.padding40)),
       ElevatedButtonCustom(

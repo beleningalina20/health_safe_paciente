@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:health_safe_paciente/src/theme/themes.dart';
 
+extension TextExtensions on TitleText {
+  Row withPrefixIcon(IconData prefixIcon) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+            padding: EdgeInsets.only(right: Dimens.padding20),
+            child:
+                Icon(prefixIcon, color: Colors.white, size: Dimens.iconSize70)),
+        this
+      ],
+    );
+  }
+}
+
 class TitleText extends StatelessWidget {
   final String text;
   final Color color;

@@ -58,9 +58,7 @@ class RegistroUsuarioFormProvider extends ChangeNotifier {
 
   DateTime? get fechaNacimiento => _fechaNacimiento;
   set fechaNacimiento(DateTime? value) {
-    print("set fecha de nacimiento: $value");
     _fechaNacimiento = value;
-    print("set fecha de nacimiento: $fechaNacimiento");
 
     notifyListeners();
   }
