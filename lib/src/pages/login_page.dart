@@ -78,12 +78,16 @@ class _LoginForm extends StatelessWidget {
                     margin: EdgeInsets.only(top: Dimens.padding40),
                     text: 'Iniciar sesión',
                     onPressed: (loginFormProvider.isValidForm())
-                        ? () async => await login(
+                        ? () async {
+                            FocusScope.of(context).unfocus();
+
+                            await login(
                               context,
                               autenticacionService,
                               loginFormProvider.correo,
                               loginFormProvider.contrasena,
-                            )
+                            );
+                          }
                         : null,
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.blue,
